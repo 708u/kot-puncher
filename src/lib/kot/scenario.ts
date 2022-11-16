@@ -8,8 +8,13 @@ import {ensureDir} from 'https://deno.land/std@0.163.0/fs/mod.ts'
 import {join} from 'https://deno.land/std@0.163.0/path/mod.ts'
 import puppeteer from 'https://deno.land/x/puppeteer@16.2.0/mod.ts'
 
-// TODO: add result object
-export const run = async (option: Option): Promise<void> => {
+type Status = 'success' | 'canceled' | 'failed'
+export type Result = {
+  type: Status
+  msg: string
+}
+
+export const run = async (option: Option): Promise<Result> => {
   const outDir = join(option.outDirBase, 'screenshot', format(new Date(), 'yyyyMMddHHmmss'))
   ensureDir(outDir)
 
@@ -23,9 +28,11 @@ export const run = async (option: Option): Promise<void> => {
   // cancel punch-in / out if user has already recorded time card at target date
   if (option.verbose) console.log(`determine if user has already ${option.mode}`)
   if (await hasAlreadyPunched(option)) {
-    console.log(`you have already recorded time card at target date. mode: ${option.mode}`)
     await browser.close()
-    return
+    return {
+      type: 'canceled',
+      msg: `you have already recorded time card at target date. mode: ${option.mode}`,
+    }
   }
   // exec scenario by mode
   switch (option.mode) {
@@ -46,9 +53,17 @@ export const run = async (option: Option): Promise<void> => {
   if (await !hasAlreadyPunched(option)) {
     await recorderPage.screenshot({path: join(outDir, `${option.mode}_failed.png`)})
     await browser.close()
-    throw new Error(`${option.mode} finished but record dose not exist in time card table`)
+    return {
+      type: 'failed',
+      msg: `${option.mode} finished but record dose not exist in time card table`,
+    }
   }
 
   await recorderPage.screenshot({path: join(outDir, `${option.mode}-success.png`)})
   await browser.close()
+
+  return {
+    type: 'success',
+    msg: `${option.mode} finished successfully.}`,
+  }
 }
