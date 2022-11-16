@@ -8,5 +8,7 @@ if (option.dryRun) console.log('dry run')
 try {
   await run(option)
 } catch (e) {
-  console.log(`${option.mode} failed. ${e}`)
+  console.error(`${option.mode} failed. ${e}`)
 }
+
+console.log(`success ${option.mode}`)

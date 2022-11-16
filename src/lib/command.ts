@@ -10,7 +10,7 @@ export type Option = {
   sendNotificationEnabled: boolean
 }
 
-const modes = ['punchIn', 'punchOut'] as const
+const modes = ['punch-in', 'punch-out'] as const
 
 const isMode = (mode: unknown): mode is Mode => {
   return typeof mode === 'string' && modes.includes(mode as Mode)
