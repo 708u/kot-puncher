@@ -30,7 +30,7 @@ export const hasAlreadyPunched = async (option: Option): Promise<boolean> => {
 
   // TODO: switch by target date
   const timeCard = timeCards.get(format(new Date(), 'MM/dd'))
-  if (!timeCard) return false
+  if (!timeCard) throw new Error('time card is undefined unexpectedly')
 
   switch (option.mode) {
     case 'punch-in':
@@ -47,7 +47,7 @@ const extractTimeCard = async (page: Page): Promise<Map<string, TimeCard>> => {
     if (data === null) return ''
     const tdValueSelector = await data.getProperty('textContent')
     const tdValue = (await tdValueSelector?.jsonValue()) as string
-    // transform C\n\n01:01 (月) to 01:01 (月)
+    // transform td like `C\n\n01:01 (月)` to `01:01 (月)`
     return tdValue
       .trim()
       .split(/\n/g)
