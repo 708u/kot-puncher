@@ -1,12 +1,12 @@
-import puppeteer from 'https://deno.land/x/puppeteer@16.2.0/mod.ts'
-;(async () => {
-  const browser = await puppeteer.launch()
-  const page = await browser.newPage()
+import {parseArgs} from '@/lib/command.ts'
+import {run} from '@/lib/kot/scenario.ts'
+import {parse} from 'https://deno.land/std@0.163.0/flags/mod.ts'
 
-  await page.goto('https://developers.google.com/web/')
+const option = parseArgs(parse(Deno.args))
+if (option.dryRun) console.log('dry run')
 
-  // Type into search box.
-  await page.type('.devsite-search-field', 'Headless Chrome')
-  await page.screenshot({path: './foo.png'})
-  await browser.close()
-})()
+try {
+  await run(option)
+} catch (e) {
+  console.log(`${option.mode} failed. ${e}`)
+}
