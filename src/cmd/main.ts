@@ -13,7 +13,7 @@ try {
   const result = await run(option)
   switch (result.type) {
     case 'success':
-      new Notifier(slackNotifier(SLACK_WEBHOOK_URL)).notify('hello')
+      if (option.sendNotificationEnabled) new Notifier(slackNotifier(SLACK_WEBHOOK_URL)).notify('hello')
       break
     case `canceled`:
       console.log(`${option.mode} canceled. ${result.msg}`)
