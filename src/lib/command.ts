@@ -1,3 +1,4 @@
+import {SLACK_WEBHOOK_URL} from '@/environment.ts'
 import {resolve} from 'https://deno.land/std@0.162.0/path/mod.ts'
 import {parse} from 'https://deno.land/std@0.163.0/flags/mod.ts'
 
@@ -26,6 +27,9 @@ export const parseArgs = (args: ReturnType<typeof parse>): Option => {
     outDirBase: args?.o ? resolve(args?.o) : './out',
     sendNotificationEnabled: !!args?.['send-notification'],
   }
+
+  if (option.sendNotificationEnabled && SLACK_WEBHOOK_URL === '')
+    throw new Error(`env var $SLACK_WEBHOOK_URL must be set if send-notification is enabled`)
 
   return option
 }
