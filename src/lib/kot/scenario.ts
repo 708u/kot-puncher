@@ -36,13 +36,13 @@ export const run = async (option: Option): Promise<Result> => {
   }
   // exec scenario by mode
   switch (option.mode) {
-    case 'punch-out':
-      if (!option.dryRun) await recorderPage.click(selector.recorder.clockIn)
-      if (option.verbose) console.log('punch in success')
-      break
     case 'punch-in':
-      if (!option.dryRun) await recorderPage.click(selector.recorder.clockOut)
+      if (!option.dryRun) await recorderPage.click(selector.recorder.clockIn)
       if (option.verbose) console.log('punch out success')
+      break
+    case 'punch-out':
+      if (!option.dryRun) await recorderPage.click(selector.recorder.clockOut)
+      if (option.verbose) console.log('punch in success')
       break
     default:
       throw new ExhaustiveError(option.mode)
