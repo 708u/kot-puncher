@@ -1,4 +1,5 @@
-export type NoticeCallback = (msg: string) => Promise<void>
+import {Result} from '@/lib/kot/scenario.ts'
+export type NoticeCallback = (result: Result) => Promise<void>
 
 export class Notifier {
   constructor(...notifiers: Array<NoticeCallback>) {
@@ -7,7 +8,7 @@ export class Notifier {
 
   private notifiers: Array<NoticeCallback>
 
-  public notify(msg: string): void {
-    this.notifiers.forEach(async notify => await notify(msg))
+  public notify(result: Result): void {
+    this.notifiers.forEach(async notify => await notify(result))
   }
 }
