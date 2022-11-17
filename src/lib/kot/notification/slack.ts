@@ -23,6 +23,8 @@ export const slackNotifier = (webHookUrl: string, option: Option): NoticeCallbac
         default:
           throw new ExhaustiveError(option.mode)
       }
+
+      // notify message to slack via webhook
       await fetch(webHookUrl, {method: 'POST', body: JSON.stringify({text: msg})})
     }
 
