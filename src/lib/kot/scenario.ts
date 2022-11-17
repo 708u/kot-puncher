@@ -27,7 +27,7 @@ export const run = async (option: Option): Promise<Result> => {
 
   // cancel punch-in / out if user has already recorded time card at target date
   if (option.verbose) console.log(`determine if user has already ${option.mode}`)
-  if (!option.dryRun && (await hasAlreadyPunched(option))) {
+  if ((await hasAlreadyPunched(option)) && !option.dryRun) {
     await browser.close()
     return {
       type: 'canceled',
@@ -50,7 +50,7 @@ export const run = async (option: Option): Promise<Result> => {
 
   // check if punch in / out is finished successfully
   if (option.verbose) console.log(`determine if ${option.mode} finished successfully`)
-  if (!option.dryRun && (await !hasAlreadyPunched(option))) {
+  if ((await !hasAlreadyPunched(option)) && !option.dryRun) {
     await recorderPage.screenshot({path: join(outDir, `${option.mode}_failed.png`)})
     await browser.close()
     return {
@@ -64,6 +64,6 @@ export const run = async (option: Option): Promise<Result> => {
 
   return {
     type: 'success',
-    msg: `${option.mode} finished successfully.}`,
+    msg: `${option.mode} finished successfully.`,
   }
 }
