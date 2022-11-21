@@ -9,7 +9,7 @@ type TimeCard = {
   end?: string
 }
 
-export const hasAlreadyPunched = async (option: Option): Promise<boolean> => {
+export const hasAlreadyPunched = async (targetDate: Date, option: Option): Promise<boolean> => {
   const browser = await puppeteer.launch()
   const page = await browser.newPage()
   await logIn(page)
@@ -28,8 +28,7 @@ export const hasAlreadyPunched = async (option: Option): Promise<boolean> => {
   await page.close()
   await browser.close()
 
-  // TODO: switch by target date
-  const timeCard = timeCards.get(format(new Date(), 'MM/dd'))
+  const timeCard = timeCards.get(format(targetDate, 'MM/dd'))
   if (!timeCard) throw new Error('time card is undefined unexpectedly')
 
   switch (option.mode) {

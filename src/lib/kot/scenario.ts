@@ -15,7 +15,9 @@ export type Result = {
 }
 
 export const run = async (option: Option): Promise<Result> => {
-  const outDir = join(option.outDirBase, 'screenshot', format(new Date(), 'yyyyMMddHHmmss'))
+  // TODO: switch target date by option
+  const targetDate = new Date()
+  const outDir = join(option.outDirBase, 'screenshot', format(targetDate, `yyyyMMdd-${option.mode}`))
   ensureDir(outDir)
 
   const browser = await puppeteer.launch()
@@ -27,11 +29,13 @@ export const run = async (option: Option): Promise<Result> => {
 
   // cancel punch-in / out if user has already recorded time card at target date
   if (option.verbose) console.log(`determine if user has already ${option.mode}`)
-  if ((await hasAlreadyPunched(option)) && !option.dryRun) {
+  if ((await hasAlreadyPunched(targetDate, option)) && !option.dryRun) {
     await browser.close()
     return {
       type: 'canceled',
-      msg: `you have already recorded time card at target date. mode: ${option.mode}`,
+      msg: `you have already recorded time card at target date ${format(targetDate, 'yyyy-MM-dd')}. mode: ${
+        option.mode
+      }`,
     }
   }
   // exec scenario by mode
@@ -50,8 +54,8 @@ export const run = async (option: Option): Promise<Result> => {
 
   // check if punch in / out is finished successfully
   if (option.verbose) console.log(`determine if ${option.mode} finished successfully`)
-  if ((await !hasAlreadyPunched(option)) && !option.dryRun) {
-    await recorderPage.screenshot({path: join(outDir, `${option.mode}_failed.png`)})
+  if ((await !hasAlreadyPunched(targetDate, option)) && !option.dryRun) {
+    await recorderPage.screenshot({path: join(outDir, `${option.mode}-failed.png`)})
     await browser.close()
     return {
       type: 'failed',

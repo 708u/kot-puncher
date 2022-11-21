@@ -14,6 +14,7 @@ try {
   switch (result.type) {
     case 'success':
       if (option.sendNotificationEnabled) new Notifier(slackNotifier(SLACK_WEBHOOK_URL, option)).notify(result)
+      console.log(`${option.mode} success.`)
       break
     case `canceled`:
       console.log(`${option.mode} canceled. ${result.msg}`)
@@ -28,5 +29,3 @@ try {
   console.error(`${option.mode} failed unexpectedly. ${e}`)
   Deno.exit(1)
 }
-
-console.log(`success ${option.mode}`)
