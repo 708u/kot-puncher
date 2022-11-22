@@ -1,4 +1,4 @@
-import {SLACK_WEBHOOK_URL} from '@/environment.ts'
+import {ENV} from '@/environment.ts'
 import {parseArgs} from '@/lib/command.ts'
 import {ExhaustiveError} from '@/lib/error.ts'
 import {Notifier} from '@/lib/kot/notification/notifier.ts'
@@ -13,7 +13,7 @@ try {
   const result = await run(option)
   switch (result.type) {
     case 'success':
-      if (option.sendNotificationEnabled) new Notifier(slackNotifier(SLACK_WEBHOOK_URL, option)).notify(result)
+      if (option.sendNotificationEnabled) new Notifier(slackNotifier(ENV.SLACK_WEBHOOK_URL, option)).notify(result)
       console.log(`run ${option.mode} success.`)
       break
     case `canceled`:

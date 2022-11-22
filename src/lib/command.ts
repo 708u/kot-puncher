@@ -1,4 +1,4 @@
-import {SLACK_WEBHOOK_URL} from '@/environment.ts'
+import {ENV} from '@/environment.ts'
 import {parse} from 'std/flag'
 import {resolve} from 'std/path'
 
@@ -28,7 +28,7 @@ export const parseArgs = (args: ReturnType<typeof parse>): Option => {
     sendNotificationEnabled: !!args?.['send-notification'],
   }
 
-  if (option.sendNotificationEnabled && SLACK_WEBHOOK_URL === '')
+  if (option.sendNotificationEnabled && ENV.SLACK_WEBHOOK_URL === '')
     throw new Error(`env var $SLACK_WEBHOOK_URL must be set if send-notification is enabled`)
 
   return option

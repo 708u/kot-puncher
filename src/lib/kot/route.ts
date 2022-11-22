@@ -1,6 +1,6 @@
-import {KOT_URL} from '@/environment.ts'
+import {ENV} from '@/environment.ts'
 
-const baseUrl = new URL(KOT_URL)
+const baseUrl = new URL(ENV.KOT_URL)
 
 export const routes = {
   recorder: 'independent/recorder/personal',
