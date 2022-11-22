@@ -42,15 +42,14 @@ export const run = async (option: Option): Promise<Result> => {
   switch (option.mode) {
     case 'punch-in':
       if (!option.dryRun) await recorderPage.click(selector.recorder.clockIn)
-      if (option.verbose) console.log('punch out success')
       break
     case 'punch-out':
       if (!option.dryRun) await recorderPage.click(selector.recorder.clockOut)
-      if (option.verbose) console.log('punch in success')
       break
     default:
       throw new ExhaustiveError(option.mode)
   }
+  if (option.verbose) console.log(`${option.mode} success in executing scenario`)
 
   // check if punch in / out is finished successfully
   if (option.verbose) console.log(`determine if ${option.mode} finished successfully`)

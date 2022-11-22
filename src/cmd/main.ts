@@ -14,13 +14,13 @@ try {
   switch (result.type) {
     case 'success':
       if (option.sendNotificationEnabled) new Notifier(slackNotifier(SLACK_WEBHOOK_URL, option)).notify(result)
-      console.log(`${option.mode} success.`)
+      console.log(`run ${option.mode} success.`)
       break
     case `canceled`:
-      console.log(`${option.mode} canceled. ${result.msg}`)
+      console.log(`run ${option.mode} canceled. ${result.msg}`)
       break
     case `failed`:
-      console.error(`${option.mode} failed. ${result.msg}`)
+      console.error(`run ${option.mode} failed. ${result.msg}`)
       break
     default:
       throw new ExhaustiveError(result.type)
