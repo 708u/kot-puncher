@@ -2,8 +2,8 @@ import {Option} from '@/lib/command.ts'
 import {ExhaustiveError} from '@/lib/error.ts'
 import {logIn} from '@/lib/kot/crawl/login.ts'
 import {parseDateFromTimeCardTableData, selector} from '@/lib/kot/crawl/selector.ts'
-import {format} from 'https://deno.land/std@0.163.0/datetime/mod.ts'
-import puppeteer, {ElementHandle, Page} from 'https://deno.land/x/puppeteer@16.2.0/mod.ts'
+import puppeteer, {ElementHandle, Page} from 'puppeteer'
+import {format} from 'std/datetime'
 type TimeCard = {
   begin?: string
   end?: string

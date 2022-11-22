@@ -4,7 +4,7 @@ import {ExhaustiveError} from '@/lib/error.ts'
 import {Notifier} from '@/lib/kot/notification/notifier.ts'
 import {slackNotifier} from '@/lib/kot/notification/slack.ts'
 import {run} from '@/lib/kot/scenario.ts'
-import {parse} from 'https://deno.land/std@0.163.0/flags/mod.ts'
+import {parse} from 'std/flag'
 
 const option = parseArgs(parse(Deno.args))
 if (option.dryRun) console.log('dry run enabled')

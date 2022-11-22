@@ -1,7 +1,7 @@
 import {KOT_USER_ID, KOT_USER_PASSWORD} from '@/environment.ts'
 import {selector} from '@/lib/kot/crawl/selector.ts'
 import {getRoute, routes} from '@/lib/kot/route.ts'
-import {Page} from 'https://deno.land/x/puppeteer@16.2.0/mod.ts'
+import {Page} from 'puppeteer'
 
 export const logIn = async (page: Page): Promise<Page> => {
   await page.goto(getRoute(routes.recorder))
