@@ -20,9 +20,11 @@ You should set environment variables as follows:
 |  KOT_USER_PASSWORD  |  user password for login  |
 
 If you want to send notification when punch in / out is succeed, please set optional environment variables as follows:
-|  Value  |  Description |
-| ---- | ---- |
-|  SLACK_WEBHOOK_URL  | The webhook url of the channel you want to send notifications to |
+|  Value  | Default value | Description |
+| ---- | ---- | ---- |
+|  SLACK_WEBHOOK_URL  | `''` | The webhook url of the channel you want to send notifications to. |
+|  SLACK_PUNCH_IN_MESSAGES | `hi` | message when punching in. you can specify comma-separated value, in which case one will be selected at random. |
+|  SLACK_PUNCH_OUT_MESSAGES | `bye` | message when punching out. you can specify comma-separated value, in which case one will be selected at random. |
 
 ## Option
 

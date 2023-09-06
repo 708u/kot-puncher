@@ -1,3 +1,4 @@
+import {ENV} from '@/environment.ts'
 import {Option} from '@/lib/command.ts'
 import {ExhaustiveError} from '@/lib/error.ts'
 import {NoticeCallback} from '@/lib/kot/notification/notifier.ts'
@@ -12,22 +13,28 @@ export const slackNotifier = (webHookUrl: string, option: Option): NoticeCallbac
     }
 
     if (!option.dryRun) {
-      let msg = ''
-      switch (option.mode) {
-        case 'punch-in':
-          msg = 'hi'
-          break
-        case 'punch-out':
-          msg = 'bye'
-          break
-        default:
-          throw new ExhaustiveError(option.mode)
-      }
-
       // notify message to slack via webhook
-      await fetch(webHookUrl, {method: 'POST', body: JSON.stringify({text: msg})})
+      await fetch(webHookUrl, {method: 'POST', body: JSON.stringify({text: getSlackMessage(option)})})
     }
 
     if (option.verbose) console.log('send message to slack success')
   }
+}
+
+export const getSlackMessage = (option: Option): string => {
+  switch (option.mode) {
+    case 'punch-in':
+      return getSomeMessage(ENV.SLACK_PUNCH_IN_MESSAGES.split(','), 'hi')
+    case 'punch-out':
+      return getSomeMessage(ENV.SLACK_PUNCH_OUT_MESSAGES.split(','), 'bye')
+    default:
+      throw new ExhaustiveError(option.mode)
+  }
+}
+
+const getSomeMessage = <T>(arr: Array<T>, fallback: T): T => {
+  if (arr.length === 0) return fallback
+  if (arr.length === 1) return arr[0]
+  const randomIndex = Math.floor(Math.random() * arr.length)
+  return arr[randomIndex]
 }
