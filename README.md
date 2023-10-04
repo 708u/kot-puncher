@@ -9,7 +9,7 @@ Punch in / out the king of time.
 
 ## Requirements
 
-please install `deno 1.26.1`
+please install `deno 1.37.1`
 
 You should set environment variables as follows:
 
