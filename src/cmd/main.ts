@@ -28,4 +28,6 @@ try {
 } catch (e) {
   console.error(`${option.mode} failed unexpectedly. ${e}`)
   Deno.exit(1)
+} finally {
+  Deno.exit(0)
 }
