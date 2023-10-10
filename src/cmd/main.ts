@@ -21,10 +21,10 @@ try {
       }
       console.log(`run ${option.mode} success.`)
       break
-    case `canceled`:
+    case 'canceled':
       console.log(`run ${option.mode} canceled. ${result.msg}`)
       break
-    case `failed`:
+    case 'failed':
       console.error(`run ${option.mode} failed. ${result.msg}`)
       break
     default:
