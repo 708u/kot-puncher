@@ -7,13 +7,18 @@ import {run} from '@/lib/kot/scenario.ts'
 import {parse} from 'std/flag'
 
 const option = parseArgs(parse(Deno.args))
+if (option.verbose) console.log(option)
 if (option.dryRun) console.log('dry run enabled')
 
 try {
   const result = await run(option)
   switch (result.type) {
     case 'success':
-      if (option.sendNotificationEnabled) new Notifier(slackNotifier(ENV.SLACK_WEBHOOK_URL, option)).notify(result)
+      if (option.sendNotificationEnabled) {
+        const notifier = new Notifier(slackNotifier(ENV.SLACK_WEBHOOK_URL, option))
+        await notifier.notify(result)
+        if (option.dryRun) console.log('notification sent')
+      }
       console.log(`run ${option.mode} success.`)
       break
     case `canceled`:
@@ -28,6 +33,6 @@ try {
 } catch (e) {
   console.error(`${option.mode} failed unexpectedly. ${e}`)
   Deno.exit(1)
-} finally {
-  Deno.exit(0)
 }
+
+Deno.exit(0)

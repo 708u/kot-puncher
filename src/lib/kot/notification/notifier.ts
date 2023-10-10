@@ -8,7 +8,7 @@ export class Notifier {
 
   private notifiers: Array<NoticeCallback>
 
-  public notify(result: Result): void {
-    this.notifiers.forEach(async notify => await notify(result))
+  public async notify(result: Result): Promise<void> {
+    await Promise.all(this.notifiers.map(notifier => notifier(result)))
   }
 }
