@@ -11,9 +11,9 @@ punch-out:
 	deno run -A --importmap=import_map.json src/cmd/main.ts -v --mode punch-out -o out/ --send-notification
 
 PHONY: rest-begin
-punch-out:
+rest-begin:
 	deno run -A --importmap=import_map.json src/cmd/main.ts -v --mode rest-begin -o out/ --send-notification
 
 PHONY: rest-end
-punch-out:
+rest-end:
 	deno run -A --importmap=import_map.json src/cmd/main.ts -v --mode rest-end -o out/ --send-notification
