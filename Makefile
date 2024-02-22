@@ -9,3 +9,11 @@ punch-in:
 PHONY: punch-out
 punch-out:
 	deno run -A --importmap=import_map.json src/cmd/main.ts -v --mode punch-out -o out/ --send-notification
+
+PHONY: rest-begin
+punch-out:
+	deno run -A --importmap=import_map.json src/cmd/main.ts -v --mode rest-begin -o out/ --send-notification
+
+PHONY: rest-end
+punch-out:
+	deno run -A --importmap=import_map.json src/cmd/main.ts -v --mode rest-end -o out/ --send-notification
