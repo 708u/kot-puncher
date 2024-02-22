@@ -7,6 +7,8 @@ import {format} from 'std/datetime'
 type TimeCard = {
   begin?: string
   end?: string
+  restBegin?: string
+  restEnd?: string
 }
 
 export const hasAlreadyPunched = async (targetDate: Date, option: Option): Promise<boolean> => {
@@ -31,11 +33,17 @@ export const hasAlreadyPunched = async (targetDate: Date, option: Option): Promi
   const timeCard = timeCards.get(format(targetDate, 'MM/dd'))
   if (!timeCard) throw new Error('time card is undefined unexpectedly')
 
+  if (option.verbose) console.dir(timeCard, {depth: null})
+
   switch (option.mode) {
     case 'punch-in':
       return timeCard.begin !== ''
     case 'punch-out':
       return timeCard.end !== ''
+    case 'rest-begin':
+      return timeCard.restBegin !== ''
+    case 'rest-end':
+      return timeCard.restEnd !== ''
     default:
       throw new ExhaustiveError(option.mode)
   }
@@ -65,9 +73,15 @@ const extractTimeCard = async (page: Page): Promise<Map<string, TimeCard>> => {
     const begin = await toString(startAndEndDate[0])
     const end = await toString(startAndEndDate[1])
 
+    const restStartAndEndDate = await td.$$(selector.timeCard.rest)
+    const restBegin = await toString(restStartAndEndDate[0])
+    const restEnd = await toString(restStartAndEndDate[1])
+
     timeCards.set(date, {
       begin: begin,
       end: end,
+      restBegin: restBegin,
+      restEnd: restEnd,
     })
   }
   return timeCards

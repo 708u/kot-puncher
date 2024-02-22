@@ -25,6 +25,8 @@ If you want to send notification when punch in / out is succeed, please set opti
 |  SLACK_WEBHOOK_URL  | `''` | The webhook url of the channel you want to send notifications to. |
 |  SLACK_PUNCH_IN_MESSAGES | `hi` | message when punching in. you can specify comma-separated value, in which case one will be selected at random. |
 |  SLACK_PUNCH_OUT_MESSAGES | `bye` | message when punching out. you can specify comma-separated value, in which case one will be selected at random. |
+|  SLACK_REST_BEGIN_MESSAGES | `bye` | message when take a break. you can specify comma-separated value, in which case one will be selected at random. |
+|  SLACK_REST_END_MESSAGES | `bye` | message when break ends. you can specify comma-separated value, in which case one will be selected at random. |
 
 ## Option
 

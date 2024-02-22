@@ -2,7 +2,7 @@ import {ENV} from '@/environment.ts'
 import {parse} from 'std/flag'
 import {resolve} from 'std/path'
 
-type Mode = typeof modes[number]
+type Mode = (typeof modes)[number]
 export type Option = {
   mode: Mode
   dryRun: boolean
@@ -11,7 +11,7 @@ export type Option = {
   sendNotificationEnabled: boolean
 }
 
-const modes = ['punch-in', 'punch-out'] as const
+const modes = ['punch-in', 'punch-out', 'rest-begin', 'rest-end'] as const
 
 const isMode = (mode: unknown): mode is Mode => {
   return typeof mode === 'string' && modes.includes(mode as Mode)

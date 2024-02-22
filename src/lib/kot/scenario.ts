@@ -1,7 +1,8 @@
 import {Option} from '@/lib/command.ts'
 import {ExhaustiveError} from '@/lib/error.ts'
+import {runBreak} from '@/lib/kot/crawl/break.ts'
 import {logIn} from '@/lib/kot/crawl/login.ts'
-import {selector} from '@/lib/kot/crawl/selector.ts'
+import {restButtonIndex, selector} from '@/lib/kot/crawl/selector.ts'
 import {hasAlreadyPunched} from '@/lib/kot/crawl/time_card.ts'
 import puppeteer from 'puppeteer'
 import {format} from 'std/datetime'
@@ -46,6 +47,12 @@ export const run = async (option: Option): Promise<Result> => {
     case 'punch-out':
       if (!option.dryRun) await recorderPage.click(selector.recorder.clockOut)
       break
+    case 'rest-begin':
+      if (!option.dryRun) await runBreak(recorderPage, restButtonIndex.begin)
+      break
+    case 'rest-end':
+      if (!option.dryRun) await runBreak(recorderPage, restButtonIndex.end)
+      break
     default:
       throw new ExhaustiveError(option.mode)
   }
@@ -53,7 +60,7 @@ export const run = async (option: Option): Promise<Result> => {
 
   // check if punch in / out is finished successfully
   if (option.verbose) console.log(`determine if ${option.mode} finished successfully`)
-  if ((await !hasAlreadyPunched(targetDate, option)) && !option.dryRun) {
+  if (!(await hasAlreadyPunched(targetDate, option)) && !option.dryRun) {
     await recorderPage.screenshot({path: join(outDir, `${option.mode}-failed.png`)})
     await browser.close()
     return {

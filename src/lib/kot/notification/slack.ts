@@ -27,6 +27,10 @@ export const getSlackMessage = (option: Option): string => {
       return getSomeMessage(ENV.SLACK_PUNCH_IN_MESSAGES.split(','), 'hi')
     case 'punch-out':
       return getSomeMessage(ENV.SLACK_PUNCH_OUT_MESSAGES.split(','), 'bye')
+    case 'rest-begin':
+      return getSomeMessage(ENV.SLACK_REST_BEGIN_MESSAGES.split(','), '休憩')
+    case 'rest-end':
+      return getSomeMessage(ENV.SLACK_REST_END_MESSAGES.split(','), '休憩終了')
     default:
       throw new ExhaustiveError(option.mode)
   }
