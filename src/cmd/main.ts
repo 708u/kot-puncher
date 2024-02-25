@@ -3,7 +3,7 @@ import {parseArgs} from '@/lib/command.ts'
 import {ExhaustiveError} from '@/lib/error.ts'
 import {Notifier} from '@/lib/kot/notification/notifier.ts'
 import {slackNotifier} from '@/lib/kot/notification/slack.ts'
-import {kotPuncherPunchInScenarioRunner, runScenario} from '@/lib/kot/runner.ts'
+import {createKotPuncherScenarioRunnerByMode, runScenario} from '@/lib/kot/runner.ts'
 import {retryAsync} from '@/lib/retry.ts'
 import {parse} from 'std/flag'
 
@@ -12,7 +12,7 @@ if (option.verbose) console.log(option)
 if (option.dryRun) console.log('dry run enabled')
 
 try {
-  const result = await retryAsync(() => runScenario(kotPuncherPunchInScenarioRunner(option), option))
+  const result = await retryAsync(() => runScenario(createKotPuncherScenarioRunnerByMode(option)))
 
   switch (result.type) {
     case 'success':

@@ -1,4 +1,5 @@
 import {Option} from '@/lib/command.ts'
+import {ExhaustiveError} from '@/lib/error.ts'
 import {logIn} from '@/lib/kot/crawl/login.ts'
 import {selector} from '@/lib/kot/crawl/selector.ts'
 import {extractTimeCardByTargetDate} from '@/lib/kot/crawl/time_card.ts'
@@ -10,6 +11,7 @@ export type KotPuncherScenarioRunner = {
   preCheck(): Promise<boolean>
   run(): Promise<void>
   postCheck(): Promise<boolean>
+  option: Option
 }
 
 export const kotPuncherPunchInScenarioRunner = (option: Option): KotPuncherScenarioRunner => {
@@ -36,32 +38,51 @@ export const kotPuncherPunchInScenarioRunner = (option: Option): KotPuncherScena
       const timeCard = await extractTimeCardByTargetDate(option)
       return timeCard.begin !== ''
     },
+    option,
   }
 }
 
-export const runScenario = async (runner: KotPuncherScenarioRunner, option: Option): Promise<Result> => {
+export const createKotPuncherScenarioRunnerByMode = (option: Option): KotPuncherScenarioRunner => {
+  switch (option.mode) {
+    case 'punch-in':
+      return kotPuncherPunchInScenarioRunner(option)
+    // TODO: implement other scenarios
+    case 'punch-out':
+      return kotPuncherPunchInScenarioRunner(option)
+    // TODO: implement other scenarios
+    case 'rest-begin':
+      return kotPuncherPunchInScenarioRunner(option)
+    // TODO: implement other scenarios
+    case 'rest-end':
+      return kotPuncherPunchInScenarioRunner(option)
+    default:
+      throw new ExhaustiveError(option.mode)
+  }
+}
+
+export const runScenario = async (runner: KotPuncherScenarioRunner): Promise<Result> => {
   // cancel if preCheck failed
-  if (option.verbose) console.log(`run preCheck ${option.mode}`)
-  if (!option.dryRun || !option.force) {
+  if (runner.option.verbose) console.log(`run preCheck ${runner.option.mode}`)
+  if (!runner.option.dryRun || !runner.option.force) {
     if (!(await runner.preCheck())) {
       return {
         type: 'canceled',
-        msg: `preCheck failed. mode: ${option.mode}`,
+        msg: `preCheck failed. mode: ${runner.option.mode}`,
       }
     }
   }
 
-  if (!option.dryRun) await runner.run()
+  if (!runner.option.dryRun) await runner.run()
 
-  if (!option.dryRun && !(await runner.postCheck())) {
+  if (!runner.option.dryRun && !(await runner.postCheck())) {
     return {
       type: 'failed',
-      msg: `postCheck failed. mode: ${option.mode}`,
+      msg: `postCheck failed. mode: ${runner.option.mode}`,
     }
   }
 
   return {
     type: 'success',
-    msg: `${option.mode} finished successfully.`,
+    msg: `${runner.option.mode} finished successfully.`,
   }
 }
