@@ -4,16 +4,19 @@ export const retryAsync = async <TResult>(
   backoff?: number
 ): Promise<TResult> => {
   let count = 0
-  attempts ??= 3
+  attempts ??= 4
   backoff ??= 1000
   while (count < attempts) {
     try {
+      if (count > 0) {
+        console.log(`retry ${count} after ${backoff}ms`)
+        await new Promise(resolve => setTimeout(resolve, backoff))
+        backoff *= 2
+      }
       return await func()
     } catch (e) {
-      console.error(`retry ${count + 1} failed. ${e}. retrying in ${backoff}ms.`)
+      console.log(`retry ${count + 1} failed. ${e}`)
       count++
-      backoff *= 2
-      await new Promise(resolve => setTimeout(resolve, backoff))
     }
   }
   throw new Error('retry failed')
