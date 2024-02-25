@@ -15,7 +15,7 @@ export type KotPuncherScenarioRunner = {
 export const kotPuncherPunchInScenarioRunner = (option: Option): KotPuncherScenarioRunner => {
   return {
     preCheck: async () => {
-      const timeCard = await extractTimeCardByTargetDate(new Date(), option)
+      const timeCard = await extractTimeCardByTargetDate(option)
       return timeCard.begin === ''
     },
     run: async () => {
@@ -33,7 +33,7 @@ export const kotPuncherPunchInScenarioRunner = (option: Option): KotPuncherScena
       await browser.close()
     },
     postCheck: async () => {
-      const timeCard = await extractTimeCardByTargetDate(new Date(), option)
+      const timeCard = await extractTimeCardByTargetDate(option)
       return timeCard.begin !== ''
     },
   }
