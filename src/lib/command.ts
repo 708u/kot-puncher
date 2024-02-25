@@ -7,6 +7,7 @@ export type Option = {
   mode: Mode
   dryRun: boolean
   verbose: boolean
+  force: boolean
   outDirBase: string
   sendNotificationEnabled: boolean
 }
@@ -25,6 +26,7 @@ export const parseArgs = (args: ReturnType<typeof parse>): Option => {
     dryRun: !!args?.['dry-run'],
     verbose: !!args?.v || !!args?.verbose,
     outDirBase: args?.o ? resolve(args?.o) : './out',
+    force: !!args?.f || !!args?.force,
     sendNotificationEnabled: !!args?.['send-notification'],
   }
 

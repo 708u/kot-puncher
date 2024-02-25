@@ -30,31 +30,36 @@ export const run = async (option: Option): Promise<Result> => {
 
   // cancel punch-in / out if user has already recorded time card at target date
   if (option.verbose) console.log(`determine if user has already ${option.mode}`)
-  if ((await hasAlreadyPunched(targetDate, option)) && !option.dryRun) {
-    await browser.close()
-    return {
-      type: 'canceled',
-      msg: `you have already recorded time card at target date ${format(targetDate, 'yyyy-MM-dd')}. mode: ${
-        option.mode
-      }`,
+  if (!option.force) {
+    if ((await hasAlreadyPunched(targetDate, option)) && !option.dryRun) {
+      await browser.close()
+      return {
+        type: 'canceled',
+        msg: `you have already recorded time card at target date ${format(targetDate, 'yyyy-MM-dd')}. mode: ${
+          option.mode
+        }`,
+      }
     }
   }
+
   // exec scenario by mode
-  switch (option.mode) {
-    case 'punch-in':
-      if (!option.dryRun) await recorderPage.click(selector.recorder.clockIn)
-      break
-    case 'punch-out':
-      if (!option.dryRun) await recorderPage.click(selector.recorder.clockOut)
-      break
-    case 'rest-begin':
-      if (!option.dryRun) await runBreak(recorderPage, restButtonIndex.begin)
-      break
-    case 'rest-end':
-      if (!option.dryRun) await runBreak(recorderPage, restButtonIndex.end)
-      break
-    default:
-      throw new ExhaustiveError(option.mode)
+  if (!option.dryRun) {
+    switch (option.mode) {
+      case 'punch-in':
+        await recorderPage.click(selector.recorder.clockIn)
+        break
+      case 'punch-out':
+        await recorderPage.click(selector.recorder.clockOut)
+        break
+      case 'rest-begin':
+        await runBreak(recorderPage, restButtonIndex.begin)
+        break
+      case 'rest-end':
+        await runBreak(recorderPage, restButtonIndex.end)
+        break
+      default:
+        throw new ExhaustiveError(option.mode)
+    }
   }
   if (option.verbose) console.log(`${option.mode} success in executing scenario`)
 
