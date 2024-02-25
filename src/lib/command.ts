@@ -22,7 +22,7 @@ const isMode = (mode: unknown): mode is Mode => {
   return typeof mode === 'string' && modes.includes(mode as Mode)
 }
 
-export const parseArgs = (args: ReturnType<typeof parse>): Option => {
+export const parseArgs = (args: ReturnType<typeof parse>): Readonly<Option> => {
   if (!isMode(args.mode)) throw new Error(`${args.mode} is invalid mode. mode must be ${modes.join(', ')}`)
 
   const outDirBase = args?.o ? resolve(args?.o) : './out'
@@ -39,7 +39,7 @@ export const parseArgs = (args: ReturnType<typeof parse>): Option => {
     targetDate,
     force: !!args?.f || !!args?.force,
     sendNotificationEnabled: !!args?.['send-notification'],
-  }
+  } as const satisfies Option
 
   if (option.sendNotificationEnabled && ENV.SLACK_WEBHOOK_URL === '')
     throw new Error(`env var $SLACK_WEBHOOK_URL must be set if send-notification is enabled`)
