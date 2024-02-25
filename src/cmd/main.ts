@@ -4,6 +4,7 @@ import {ExhaustiveError} from '@/lib/error.ts'
 import {Notifier} from '@/lib/kot/notification/notifier.ts'
 import {slackNotifier} from '@/lib/kot/notification/slack.ts'
 import {run} from '@/lib/kot/scenario.ts'
+import {retryAsync} from '@/lib/retry.ts'
 import {parse} from 'std/flag'
 
 const option = parseArgs(parse(Deno.args))
@@ -11,12 +12,12 @@ if (option.verbose) console.log(option)
 if (option.dryRun) console.log('dry run enabled')
 
 try {
-  const result = await run(option)
+  const result = await retryAsync(() => run(option))
+
   switch (result.type) {
     case 'success':
       if (option.sendNotificationEnabled) {
-        const notifier = new Notifier(slackNotifier(ENV.SLACK_WEBHOOK_URL, option))
-        await notifier.notify(result)
+        await new Notifier(slackNotifier(ENV.SLACK_WEBHOOK_URL, option)).notify(result)
         if (option.dryRun) console.log('notification sent')
       }
       console.log(`run ${option.mode} success.`)
