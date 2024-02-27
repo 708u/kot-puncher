@@ -7,6 +7,8 @@ import puppeteer, {Page} from 'puppeteer'
 
 type PunchCallback = (recorderPage: Page) => Promise<void>
 
+const wait = async (ms: number): Promise<void> => await new Promise(resolve => setTimeout(resolve, ms))
+
 // run general punch scenario
 // 1. login to recorder page
 // 2. exec scenario that clicks record button
@@ -17,9 +19,8 @@ export const runPunch = async (option: Option, punchCallback: PunchCallback): Pr
   const recorderPage = await logIn(await browser.newPage())
   if (option.verbose) console.log(`login success: navigate to recode page for ${option.mode}`)
 
-  await new Promise(function (resolve) {
-    setTimeout(resolve, 3000)
-  })
+  // TODO: wait until recorder page is loaded
+  await wait(2000)
 
   // exec scenario in recorder page
   if (option.verbose) console.log(`${option.mode} click record button`)
@@ -38,9 +39,7 @@ const runBreak = async (page: Page, btnIndx: RestButtonIndex): Promise<void> => 
   if (!recordButton) throw new Error(`record button not found. bntIndx: ${btnIndx}`)
 
   // TODO: wait until record button is clickable
-  await new Promise(function (resolve) {
-    setTimeout(resolve, 2000)
-  })
+  await wait(1000)
 
   return await recordButton.click()
 }
