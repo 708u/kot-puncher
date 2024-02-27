@@ -1,9 +1,9 @@
 import {Option} from '@/lib/command.ts'
-import {ExhaustiveError} from '@/lib/error.ts'
 import {logIn} from '@/lib/kot/crawl/login.ts'
 import {parseDateFromTimeCardTableData, selector} from '@/lib/kot/crawl/selector.ts'
 import puppeteer, {ElementHandle, Page} from 'puppeteer'
 import {format} from 'std/datetime'
+import {join} from 'std/path'
 type TimeCard = {
   begin?: string
   end?: string
@@ -11,7 +11,7 @@ type TimeCard = {
   restEnd?: string
 }
 
-export const hasAlreadyPunched = async (targetDate: Date, option: Option): Promise<boolean> => {
+export const extractTimeCardByTargetDate = async (option: Option): Promise<TimeCard> => {
   const browser = await puppeteer.launch()
   const page = await browser.newPage()
   await logIn(page)
@@ -27,26 +27,18 @@ export const hasAlreadyPunched = async (targetDate: Date, option: Option): Promi
 
   if (option.verbose) console.log('extract time card info from time card table')
   const timeCards = await extractTimeCard(page)
+
+  const timeCard = timeCards.get(format(option.targetDate, 'MM/dd'))
+  if (!timeCard) {
+    await page.screenshot({path: join(option.screenShotDir, `${option.mode}-fail-extract-time-card.png`)})
+    await page.close()
+    await browser.close()
+    throw new Error('time card is undefined unexpectedly')
+  }
+
   await page.close()
   await browser.close()
-
-  const timeCard = timeCards.get(format(targetDate, 'MM/dd'))
-  if (!timeCard) throw new Error('time card is undefined unexpectedly')
-
-  if (option.verbose) console.dir(timeCard, {depth: null})
-
-  switch (option.mode) {
-    case 'punch-in':
-      return timeCard.begin !== ''
-    case 'punch-out':
-      return timeCard.end !== ''
-    case 'rest-begin':
-      return timeCard.restBegin !== ''
-    case 'rest-end':
-      return timeCard.restEnd !== ''
-    default:
-      throw new ExhaustiveError(option.mode)
-  }
+  return timeCard
 }
 
 const extractTimeCard = async (page: Page): Promise<Map<string, TimeCard>> => {
