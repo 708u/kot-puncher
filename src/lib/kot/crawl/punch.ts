@@ -1,7 +1,8 @@
 import {Option} from '@/lib/command.ts'
 import {logIn} from '@/lib/kot/crawl/login.ts'
 import {RestButtonIndex, restButtonIndex, selector} from '@/lib/kot/crawl/selector.ts'
-import {join} from 'https://deno.land/std@0.93.0/path/win32.ts'
+import {join} from 'std/path'
+
 import puppeteer, {Page} from 'puppeteer'
 
 type PunchCallback = (recorderPage: Page) => Promise<void>
@@ -21,6 +22,7 @@ export const runPunch = async (option: Option, punchCallback: PunchCallback): Pr
   })
 
   // exec scenario in recorder page
+  if (option.verbose) console.log(`${option.mode} click record button`)
   if (!option.dryRun) await punchCallback(recorderPage)
   if (option.verbose) console.log(`${option.mode} success in executing scenario`)
 
