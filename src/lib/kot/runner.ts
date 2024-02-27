@@ -1,12 +1,8 @@
 import {Option} from '@/lib/command.ts'
 import {ExhaustiveError} from '@/lib/error.ts'
-import {runBreak} from '@/lib/kot/crawl/break.ts'
-import {logIn} from '@/lib/kot/crawl/login.ts'
-import {restButtonIndex, selector} from '@/lib/kot/crawl/selector.ts'
+import {punchIn, punchOut, restBegin, restEnd, runPunch} from '@/lib/kot/crawl/punch.ts'
 import {extractTimeCardByTargetDate} from '@/lib/kot/crawl/time_card.ts'
 import {Result} from '@/lib/kot/scenario.ts'
-import puppeteer from 'puppeteer'
-import {join} from 'std/path'
 
 export type KotPuncherScenarioRunner = {
   preCheck(): Promise<Result>
@@ -22,20 +18,7 @@ export const kotPuncherPunchInScenarioRunner = (option: Option): KotPuncherScena
       if (option.verbose) console.log(timeCard)
       return timeCard.begin === '' ? {type: 'success', msg: 'success'} : {type: 'canceled', msg: 'already punched in'}
     },
-    run: async () => {
-      const browser = await puppeteer.launch()
-
-      // login to recorder page
-      const recorderPage = await logIn(await browser.newPage())
-      if (option.verbose) console.log(`login success: navigate to recode page for ${option.mode}`)
-
-      // exec punch-in
-      if (!option.dryRun) await recorderPage.click(selector.recorder.clockIn, {delay: 5000})
-      if (option.verbose) console.log(`${option.mode} success in executing scenario`)
-
-      await recorderPage.screenshot({path: join(option.screenShotDir, `${option.mode}-success.png`)})
-      await browser.close()
-    },
+    run: async () => await runPunch(option, punchIn),
     postCheck: async () => {
       const timeCard = await extractTimeCardByTargetDate(option)
       if (option.verbose) console.log(timeCard)
@@ -54,20 +37,7 @@ export const kotPuncherPunchOutScenarioRunner = (option: Option): KotPuncherScen
       if (option.verbose) console.log(timeCard)
       return timeCard.end === '' ? {type: 'success', msg: 'success'} : {type: 'canceled', msg: 'already punched out'}
     },
-    run: async () => {
-      const browser = await puppeteer.launch()
-
-      // login to recorder page
-      const recorderPage = await logIn(await browser.newPage())
-      if (option.verbose) console.log(`login success: navigate to recode page for ${option.mode}`)
-
-      // exec punch-out
-      if (!option.dryRun) await recorderPage.click(selector.recorder.clockOut)
-      if (option.verbose) console.log(`${option.mode} success in executing scenario`)
-
-      await recorderPage.screenshot({path: join(option.screenShotDir, `${option.mode}-success.png`)})
-      await browser.close()
-    },
+    run: async () => await runPunch(option, punchOut),
     postCheck: async () => {
       const timeCard = await extractTimeCardByTargetDate(option)
       if (option.verbose) console.log(timeCard)
@@ -87,20 +57,7 @@ export const kotPuncherRestBeginScenarioRunner = (option: Option): KotPuncherSce
         ? {type: 'success', msg: 'success'}
         : {type: 'canceled', msg: 'already rest begin or not punched in'}
     },
-    run: async () => {
-      const browser = await puppeteer.launch()
-
-      // login to recorder page
-      const recorderPage = await logIn(await browser.newPage())
-      if (option.verbose) console.log(`login success: navigate to recode page for ${option.mode}`)
-
-      // exec rest-begin
-      if (!option.dryRun) await runBreak(recorderPage, restButtonIndex.begin)
-      if (option.verbose) console.log(`${option.mode} success in executing scenario`)
-
-      await recorderPage.screenshot({path: join(option.screenShotDir, `${option.mode}-success.png`)})
-      await browser.close()
-    },
+    run: async () => await runPunch(option, restBegin),
     postCheck: async () => {
       const timeCard = await extractTimeCardByTargetDate(option)
       if (option.verbose) console.log(timeCard)
@@ -123,20 +80,7 @@ export const kotPuncherRestEndScenarioRunner = (option: Option): KotPuncherScena
         ? {type: 'success', msg: 'success'}
         : {type: 'canceled', msg: 'already rest end or not rest begin'}
     },
-    run: async () => {
-      const browser = await puppeteer.launch()
-
-      // login to recorder page
-      const recorderPage = await logIn(await browser.newPage())
-      if (option.verbose) console.log(`login success: navigate to recode page for ${option.mode}`)
-
-      // exec rest-end
-      if (!option.dryRun) await runBreak(recorderPage, restButtonIndex.end)
-      if (option.verbose) console.log(`${option.mode} success in executing scenario`)
-
-      await recorderPage.screenshot({path: join(option.screenShotDir, `${option.mode}-success.png`)})
-      await browser.close()
-    },
+    run: async () => await runPunch(option, restEnd),
     postCheck: async () => {
       const timeCard = await extractTimeCardByTargetDate(option)
       if (option.verbose) console.log(timeCard)
