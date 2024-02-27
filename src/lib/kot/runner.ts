@@ -75,7 +75,6 @@ export const kotPuncherRestEndScenarioRunner = (option: Option): KotPuncherScena
       const timeCard = await extractTimeCardByTargetDate(option)
       if (option.verbose) console.log(timeCard)
       // begin and rest begin must be set because rest end can be executed only after punch-in and rest begin
-      // return timeCard.begin !== '' && timeCard.restBegin !== '' && timeCard.restEnd === ''
       return timeCard.begin !== '' && timeCard.restBegin !== '' && timeCard.restEnd === ''
         ? {type: 'success', msg: 'success'}
         : {type: 'canceled', msg: 'already rest end or not rest begin'}
