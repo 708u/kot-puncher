@@ -1,4 +1,5 @@
-import {Result} from '@/lib/kot/scenario.ts'
+import {Result} from '@/lib/kot/runner.ts'
+
 export type NoticeCallback = (result: Result) => Promise<void>
 
 export class Notifier {

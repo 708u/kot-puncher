@@ -2,7 +2,7 @@ import {ENV} from '@/environment.ts'
 import {Option} from '@/lib/command.ts'
 import {ExhaustiveError} from '@/lib/error.ts'
 import {NoticeCallback} from '@/lib/kot/notification/notifier.ts'
-import {Result} from '@/lib/kot/scenario.ts'
+import {Result} from '@/lib/kot/runner.ts'
 
 export const slackNotifier = (webHookUrl: string, option: Option): NoticeCallback => {
   return async (result: Result) => {

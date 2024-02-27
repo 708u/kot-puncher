@@ -2,13 +2,17 @@ import {Option} from '@/lib/command.ts'
 import {ExhaustiveError} from '@/lib/error.ts'
 import {punchIn, punchOut, restBegin, restEnd, runPunch} from '@/lib/kot/crawl/punch.ts'
 import {extractTimeCardByTargetDate} from '@/lib/kot/crawl/time_card.ts'
-import {Result} from '@/lib/kot/scenario.ts'
 
 export type KotPuncherScenarioRunner = {
   preCheck(): Promise<Result>
   run(): Promise<void>
   postCheck(): Promise<Result>
   option: Option
+}
+
+export type Result = {
+  type: 'success' | 'canceled' | 'failed'
+  msg: string
 }
 
 export const kotPuncherPunchInScenarioRunner = (option: Option): KotPuncherScenarioRunner => {
