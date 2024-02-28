@@ -20,7 +20,7 @@ export const runPunch = async (option: Option, punchCallback: PunchCallback): Pr
   if (option.verbose) console.log(`login success: navigate to recode page for ${option.mode}`)
 
   // TODO: wait until recorder page is loaded
-  await wait(2000)
+  await wait(4000)
 
   // exec scenario in recorder page
   if (option.verbose) console.log(`${option.mode} click record button`)
