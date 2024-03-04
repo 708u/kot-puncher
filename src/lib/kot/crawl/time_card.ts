@@ -23,7 +23,7 @@ export const extractTimeCardByTargetDate = async (option: Option): Promise<TimeC
   await page.click(selector.recorder.humbuggerMenu.timeCard)
 
   await page.waitForNavigation()
-  await new Promise(r => setTimeout(r, 500))
+  await new Promise(r => setTimeout(r, 2000))
 
   if (option.verbose) console.log('extract time card info from time card table')
   const timeCards = await extractTimeCard(page)
