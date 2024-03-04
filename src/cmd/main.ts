@@ -7,36 +7,38 @@ import {createKotPuncherScenarioRunnerByMode, runScenario} from '@/lib/kot/runne
 import {retryAsync} from '@/lib/retry.ts'
 import {parse} from 'std/flag'
 
-const option = parseArgs(parse(Deno.args))
-if (option.verbose) console.log(option)
-if (option.dryRun) console.log('dry run enabled')
+const run = async (): Promise<0 | 1> => {
+  const option = parseArgs(parse(Deno.args))
+  if (option.verbose) console.log(option)
+  if (option.dryRun) console.log('dry run enabled')
 
-try {
-  const result = await retryAsync(() => runScenario(createKotPuncherScenarioRunnerByMode(option)))
+  try {
+    const result = await retryAsync(() => runScenario(createKotPuncherScenarioRunnerByMode(option)))
 
-  switch (result.type) {
-    case 'success':
-      if (option.sendNotificationEnabled) {
-        if (option.dryRun) {
-          console.log('notification sent. dry run enabled.')
-        } else {
-          await new Notifier(slackNotifier(ENV.SLACK_WEBHOOK_URL, option)).notify(result)
+    switch (result.type) {
+      case 'success':
+        if (option.sendNotificationEnabled) {
+          if (option.dryRun) {
+            console.log('notification sent. dry run enabled.')
+          } else {
+            await new Notifier(slackNotifier(ENV.SLACK_WEBHOOK_URL, option)).notify(result)
+          }
         }
-      }
-      console.log(`run ${option.mode} success.`)
-      break
-    case 'canceled':
-      console.log(`run ${option.mode} canceled. ${result.msg}`)
-      break
-    case 'failed':
-      console.error(`run ${option.mode} failed. ${result.msg}`)
-      break
-    default:
-      throw new ExhaustiveError(result.type)
+        console.log(`run ${option.mode} success.`)
+        return 0
+      case 'canceled':
+        console.log(`run ${option.mode} canceled. ${result.msg}`)
+        return 0
+      case 'failed':
+        console.error(`run ${option.mode} failed. ${result.msg}`)
+        return 1
+      default:
+        throw new ExhaustiveError(result.type)
+    }
+  } catch (e) {
+    console.error(`${option.mode} failed unexpectedly. ${e}`)
+    return 1
   }
-} catch (e) {
-  console.error(`${option.mode} failed unexpectedly. ${e}`)
-  Deno.exit(1)
 }
 
-Deno.exit(0)
+Deno.exit(await run())
