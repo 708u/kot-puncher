@@ -65,7 +65,7 @@ export const kotPuncherRestBeginScenarioRunner = (option: Option): KotPuncherSce
     postCheck: async () => {
       const timeCard = await extractTimeCardByTargetDate(option)
       if (option.verbose) console.log(timeCard)
-      return timeCard.restBegin !== '' && timeCard.restEnd !== ''
+      return timeCard.begin !== '' && timeCard.restBegin !== ''
         ? {type: 'success', msg: 'success'}
         : {type: 'failed', msg: 'rest-begin failed'}
     },
