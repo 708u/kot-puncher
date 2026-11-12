@@ -38,7 +38,7 @@ export const getSlackMessage = (option: Option): string => {
 
 const getSomeMessage = <T>(arr: Array<T>, fallback: T): T => {
   if (arr.length === 0) return fallback
-  if (arr.length === 1) return arr[0]
+  if (arr.length === 1) return arr[0] ?? fallback
   const randomIndex = Math.floor(Math.random() * arr.length)
-  return arr[randomIndex]
+  return arr[randomIndex] ?? fallback
 }

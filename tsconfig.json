@@ -1,18 +1,17 @@
 {
   "compilerOptions": {
-    "target": "ESNEXT",
-    "module": "esnext",
-    "moduleResolution": "classic",
-    // Emit additional JavaScript to ease support for importing CommonJS modules. This enables `allowSyntheticDefaultImports` for type compatibility.
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
     "esModuleInterop": true,
     "strict": true,
     "noUncheckedIndexedAccess": true,
-    "baseUrl": ".",
+    "types": ["bun"],
     "paths": {
       "@/*": ["./src/*"]
-    },
-    // Specify what JSX code is generated.
-    "jsx": "react-jsx"
+    }
   },
   "include": ["./src/**/*"]
 }

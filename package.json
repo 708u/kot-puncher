@@ -1,0 +1,19 @@
+{
+  "name": "kot-puncher",
+  "private": true,
+  "scripts": {
+    "start": "bun src/cmd/main.ts",
+    "build": "bun build --compile src/cmd/main.ts --outfile out/kot-puncher",
+    "check": "tsc --noEmit",
+    "test": "bun test",
+    "browser:install": "bun x --bun puppeteer browsers install chrome"
+  },
+  "dependencies": {
+    "date-fns": "^4.4.0",
+    "puppeteer": "^25.16.0"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.4.4",
+    "typescript": "^7.0.2"
+  }
+}
