@@ -9,7 +9,12 @@ Punch in / out the king of time.
 
 ## Requirements
 
-please install `deno 1.37.1`
+please install `bun 1.4.4`, then install dependencies and Chrome for puppeteer:
+
+```bash
+bun install
+bun run browser:install
+```
 
 You should set environment variables as follows:
 
@@ -20,30 +25,32 @@ You should set environment variables as follows:
 |  KOT_USER_PASSWORD  |  user password for login  |
 
 If you want to send notification when punch in / out is succeed, please set optional environment variables as follows:
-|  Value  | Default value | Description |
+
+| Value | Default value | Description |
 | ---- | ---- | ---- |
-|  SLACK_WEBHOOK_URL  | `''` | The webhook url of the channel you want to send notifications to. |
-|  SLACK_PUNCH_IN_MESSAGES | `hi` | message when punching in. you can specify comma-separated value, in which case one will be selected at random. |
-|  SLACK_PUNCH_OUT_MESSAGES | `bye` | message when punching out. you can specify comma-separated value, in which case one will be selected at random. |
-|  SLACK_REST_BEGIN_MESSAGES | `bye` | message when take a break. you can specify comma-separated value, in which case one will be selected at random. |
-|  SLACK_REST_END_MESSAGES | `bye` | message when break ends. you can specify comma-separated value, in which case one will be selected at random. |
+| SLACK_WEBHOOK_URL | `''` | The webhook url of the channel you want to send notifications to. |
+| SLACK_PUNCH_IN_MESSAGES | `hi` | message when punching in. you can specify comma-separated value, in which case one will be selected at random. |
+| SLACK_PUNCH_OUT_MESSAGES | `bye` | message when punching out. you can specify comma-separated value, in which case one will be selected at random. |
+| SLACK_REST_BEGIN_MESSAGES | `bye` | message when take a break. you can specify comma-separated value, in which case one will be selected at random. |
+| SLACK_REST_END_MESSAGES | `bye` | message when break ends. you can specify comma-separated value, in which case one will be selected at random. |
 
 ## Option
 
-|  Value  | Default value |  Description |
+| Value | Default value | Description |
 | ---- | ---- | ---- |
-|  `--mode` | `""` | Specify running mode in `punch-in` and `punch-out` |
-|  `--dry-run` | `false` | Run kot-puncher with no crawling and no notification |
-|  `-v, --verbose` | `false` | Show detailed log to stdin |
-|  `-o` | `./out` | Path to directory to save artifact(like screenshot) |
-|  `--send-notification` | `false` | Enable to sand notification |
+| `--mode` | `""` | Specify running mode in `punch-in` and `punch-out` |
+| `--dry-run` | `false` | Run kot-puncher with no crawling and no notification |
+| `-v, --verbose` | `false` | Show detailed log to stdin |
+| `-o` | `./out` | Path to directory to save artifact(like screenshot) |
+| `-f` | `false` | force execution if already punched on target date |
+| `--send-notification` | `false` | Enable to sand notification |
 
 ## How to use
 
 basic usage
 
 ```bash
-deno run -A --importmap=import_map.json src/cmd/main.ts -v --mode punch-in -o out --send-notification
+bun src/cmd/main.ts -v --mode punch-in -o out --send-notification
 ```
 
 ### Alias
