@@ -1,2 +1,4 @@
 .envrc
 out
+
+node_modules

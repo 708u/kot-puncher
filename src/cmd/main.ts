@@ -5,10 +5,9 @@ import {Notifier} from '@/lib/kot/notification/notifier.ts'
 import {slackNotifier} from '@/lib/kot/notification/slack.ts'
 import {createKotPuncherScenarioRunnerByMode, runScenario} from '@/lib/kot/runner.ts'
 import {retryAsync} from '@/lib/retry.ts'
-import {parse} from 'std/flag'
 
 const run = async (): Promise<0 | 1> => {
-  const option = parseArgs(parse(Deno.args))
+  const option = parseArgs()
   if (option.verbose) console.log(option)
   if (option.dryRun) console.log('dry run enabled')
 
@@ -41,4 +40,4 @@ const run = async (): Promise<0 | 1> => {
   }
 }
 
-Deno.exit(await run())
+process.exitCode = await run()

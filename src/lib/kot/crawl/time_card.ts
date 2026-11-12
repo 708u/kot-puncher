@@ -2,8 +2,8 @@ import {Option} from '@/lib/command.ts'
 import {logIn} from '@/lib/kot/crawl/login.ts'
 import {parseDateFromTimeCardTableData, selector} from '@/lib/kot/crawl/selector.ts'
 import puppeteer, {ElementHandle, Page} from 'puppeteer'
-import {format} from 'std/datetime'
-import {join} from 'std/path'
+import {format} from 'date-fns'
+import {join} from 'node:path'
 type TimeCard = {
   begin?: string
   end?: string
@@ -20,9 +20,7 @@ export const extractTimeCardByTargetDate = async (option: Option): Promise<TimeC
   // wait until menu is clickable
   await new Promise(r => setTimeout(r, 1000))
   await page.click(selector.recorder.humbuggerMenu.id)
-  await page.click(selector.recorder.humbuggerMenu.timeCard)
-
-  await page.waitForNavigation()
+  await Promise.all([page.waitForNavigation(), page.click(selector.recorder.humbuggerMenu.timeCard)])
   await new Promise(r => setTimeout(r, 2000))
 
   if (option.verbose) console.log('extract time card info from time card table')
@@ -42,8 +40,8 @@ export const extractTimeCardByTargetDate = async (option: Option): Promise<TimeC
 }
 
 const extractTimeCard = async (page: Page): Promise<Map<string, TimeCard>> => {
-  const toString = async (data: ElementHandle | null): Promise<string> => {
-    if (data === null) return ''
+  const toString = async (data: ElementHandle | null | undefined): Promise<string> => {
+    if (data == null) return ''
     const tdValueSelector = await data.getProperty('textContent')
     const tdValue = (await tdValueSelector?.jsonValue()) as string
     // transform td like `C\n\n01:01 (月)` to `01:01 (月)`

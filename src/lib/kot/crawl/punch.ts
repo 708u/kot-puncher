@@ -1,7 +1,7 @@
 import {Option} from '@/lib/command.ts'
 import {logIn} from '@/lib/kot/crawl/login.ts'
 import {RestButtonIndex, restButtonIndex, selector} from '@/lib/kot/crawl/selector.ts'
-import {join} from 'std/path'
+import {join} from 'node:path'
 
 import puppeteer, {Page} from 'puppeteer'
 
@@ -35,7 +35,7 @@ export const runPunch = async (option: Option, punchCallback: PunchCallback): Pr
 const runBreak = async (page: Page, btnIndx: RestButtonIndex): Promise<void> => {
   const recordList = await page.$$(selector.recorder.recordList)
 
-  const recordButton = await recordList[btnIndx].$(selector.recorder.recordBtnClass)
+  const recordButton = await recordList[btnIndx]?.$(selector.recorder.recordBtnClass)
   if (!recordButton) throw new Error(`record button not found. bntIndx: ${btnIndx}`)
 
   // TODO: wait until record button is clickable
