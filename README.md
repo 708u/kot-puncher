@@ -36,6 +36,7 @@ If you want to send notification when punch in / out is succeed, please set opti
 |  `--dry-run` | `false` | Run kot-puncher with no crawling and no notification |
 |  `-v, --verbose` | `false` | Show detailed log to stdin |
 |  `-o` | `./out` | Path to directory to save artifact(like screenshot) |
+|  `-f` | `false` | force execution if already punched on target date |
 |  `--send-notification` | `false` | Enable to sand notification |
 
 ## How to use
