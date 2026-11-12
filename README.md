@@ -9,7 +9,12 @@ Punch in / out the king of time.
 
 ## Requirements
 
-please install `deno 1.37.1`
+please install `bun 1.4.4`, then install dependencies and Chrome for puppeteer:
+
+```bash
+bun install
+bun run browser:install
+```
 
 You should set environment variables as follows:
 
@@ -45,7 +50,7 @@ If you want to send notification when punch in / out is succeed, please set opti
 basic usage
 
 ```bash
-deno run -A --importmap=import_map.json src/cmd/main.ts -v --mode punch-in -o out --send-notification
+bun src/cmd/main.ts -v --mode punch-in -o out --send-notification
 ```
 
 ### Alias
